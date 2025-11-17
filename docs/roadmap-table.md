@@ -1,52 +1,102 @@
-# Roadmap Table
-The autonomy stack is built from eight layers numbered 0 through 7.
-Each layer has a clear purpose that supports the others.
-Every layer carries known risks that must be managed.
-Safety measures exist at each level to contain faults before they spread.
-Human checkpoints confirm that major steps remain aligned with intent.
-The combined plan keeps the digital model, hardware, and science in sync.
+# Final Integrated Roadmap for an Autonomous Experimental System
 
-## Overview of the Layers
-| Layer | Purpose | What this layer does | Main risks | Safety measures | Practical next steps |
-| --- | --- | --- | --- | --- | --- |
-| 0 | Define the system and its safe space | Build the digital model, document physical limits, and record baseline assumptions | Wrong limits or missing physics can endanger later layers | Formal design reviews, simulation stress tests, and locked baseline documents | Keep the digital twin current and publish any change log |
-| 1 | Keep hardware healthy and aligned | Drive actuators, hold interlocks, monitor sensors, and compare duplicates | Hardware failure, desynchronised sensors, or alarms ignored | Redundant sensors, automatic shutdown paths, and audible alarms | Expand self-test coverage and practise emergency drills |
-| 2 | Maintain calibration and learned parameters | Measure drifts, fit control curves, and update the digital model | Drift may mimic new physics and mask faults | Scheduled calibrations, rollback if confidence drops, and human sign-off | Add drift forecasting and improve data tagging |
-| 3 | Optimise control actions | Create pulse shapes, waveforms, and control schedules | Unsafe pulses can damage hardware or push into unknown regions | Policy engine checks, sandbox simulations, and library of approved patterns | Build a catalogue of validated pulses and require review for new families |
-| 4 | Plan measurements automatically | Choose the next measurement steps and adapt sequences | Exploration may become biased or miss safe checkpoints | Diversity guards, stop rules, and human review when bias metrics trip | Add bias monitors and expand stopping criteria |
-| 5 | Manage full experiments | Orchestrate runs, coordinate subsystems, and handle long workflows | Cascading failures across subsystems | Layered rollback plans, watchdog timers, and staged automation levels | Develop runbooks for long autonomous runs and test failover scripts |
-| 6 | Interpret data and update models | Analyse results, detect anomalies, and refresh model parameters | Artefacts may be accepted as true physics | Cross-check with reference data, dual analysis paths, and anomaly tagging | Increase anomaly coverage and maintain independent validation datasets |
-| 7 | Provide scientific reasoning | Suggest hypotheses, plan campaigns, and summarise findings | Self-confirming loops and entry into sensitive parameter regions | Mandatory human review, hypothesis diversity checks, and limit awareness | Build transparent reasoning logs and train users to question suggestions |
+(Architect + Guardian enhancements; clear wording; no abbreviations)
 
-## Global Rules for the System
-### Order of trust
-When layers disagree, the most physically grounded layer wins.
-Physical limits and calibrations define the base truth.
-Hardware health reports come next.
-Data interpretation follows, because it combines measurements with the model.
-Optimisation must honour the earlier results.
-Measurement planning builds on optimisation.
-Scientific reasoning is last and must obey all prior limits.
+## A. Roadmap Table (Layers 0–7)
 
-### Human checkpoints
-Human review is mandatory before new pulse or waveform families reach hardware.
-Long autonomous runs require a signed plan and an on-call human.
-Model changes, especially those that alter safety envelopes, need approval.
-Scientific conclusions or hypotheses must be reviewed before they guide actions.
+| Layer | Purpose | What this layer does | Main risks | Safety measures (including Guardian additions) | Practical next steps |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **0 — Design and Basic Stability** | Build a robust experiment from the start | Use computer models to design trap shapes, optical paths, mechanical parts | Model may not match reality; over-idealization | Validate models with known reference cases; test extreme scenarios; set strict physical limits; archive all validation results | Build a digital model; define all physical limits and store them centrally |
+| **1 — Hardware-Level Control** | Keep experiment in a safe working region | Automatic laser locking, beam alignment, voltage stability | “Stable but wrong”; hidden failures | Duplicate sensors; hardware switches; alarms; human override; continuous anomaly detection (Type 1) | Develop lock routines; define health indicators; test error handling |
+| **2 — Calibration and System Learning** | Measure and update physical parameters | Automatic calibration of trap frequencies, beam shapes, magnetic fields | Drift mistaken for new physics; incorrect model updates | Independent calibration tests; repeated checks; cautious starting values; anomaly checks (Type 2) | Automate calibrations; synchronize digital model after each update; re-verify autonomy protocols after model changes |
+| **3 — Automatic Control Optimization** | Improve pulses, waveforms, movement sequences | Machine searches for better pulses or settings | Unsafe pulses; exploitation of noise | Only allow actions inside safe physical and operational limits; new pulse families require human approval; digital twin validation before hardware | Add bounded optimizers; implement digital twin tests for each new plan |
+| **4. — Automatic Choice of Measurement Steps** | Decide next measurement or scan point | Adaptive selection of time, frequency, or spatial points | Biased exploration; ignoring rare events | Exploration diversity; interrupt planning on anomalies (Type 3); knowledge-limit checks; human approval for leaving trusted regions | Introduce measurement planner; enforce exploration quotas |
+| **5 — Experiment Management** | Run long experiments and respond to problems | Execute sequences; restart calibrations; pause on problems | Cascade failures; trusting outdated layers | Safety manager that checks all actions; daily or more frequent human review; freeze on Type 1–2 anomalies; logging of all inter-layer interactions | Build safety manager; dashboards; anomaly displays |
+| **6 — Data Interpretation and Model Updating** | Understand data and update model | Automatic fitting, model comparison, pattern detection | Artefacts treated as physics; incorrect model switching | Forced cross-checks; uncertainty inflation; require human review for model changes; Type 3 and Type 4 anomaly signals | Implement anomaly detectors; add version control for models |
+| **7 — Scientific Reasoning and Hypothesis Proposals** | Suggest new scientific ideas | Generate hypotheses or exploration goals | Reinforced errors; ethically sensitive regions | Human approval always required; forbid exploring sensitive ranges (dual-use, poorly modeled areas); autonomy audit flags | Allow suggestions but not actions; add hypothesis review process |
 
-### Digital model ("twin")
-A digital model is built at design time to reflect the full system.
-It is updated after every calibration and whenever hardware changes.
-Risky strategies must prove safe in this model before touching hardware.
-The policy engine compares live plans against the digital model on every run.
+---
 
-### Safety envelopes
-Physical limits protect hardware from damage.
-Operational limits show where calibrations remain valid.
-Knowledge limits define where the model can be trusted.
-Every action must remain inside all three envelopes at once.
+## B. Required Guardian Protocols
 
-### Autonomy audits
-Regular human audits sample random autonomous decisions.
-Auditors check for hidden drift, rule breaks, or silent overrides.
-Findings are documented, shared, and feed improvements into all layers.
+### 1. Anomaly Definitions and Response
+
+A consistent, simple 4-level anomaly schema:
+
+* **Type 1 – Hardware anomaly**
+    * **Examples:** sensor disagreement, runaway temperature, lock failure
+    * **Response:** Immediate pause; alert operator; block all high-level actions
+
+* **Type 2 – Calibration anomaly**
+    * **Examples:** trap frequency shifts faster than expected, beam drift
+    * **Response:** Freeze all autonomous actions; require recalibration; revalidate digital model
+
+* **Type 3 – Model anomaly**
+    * **Examples:** data inconsistent with all current models
+    * **Response:** Continue with larger uncertainty; flag for human review; stop adaptive exploration
+
+* **Type 4 – Epistemic anomaly**
+    * **Examples:** model uncertainty becomes too high; trusted region exceeded
+    * **Response:** Halt autonomous decision-making; require human intervention
+
+### 2. Autonomy Audit Protocol
+
+Regular reviews of the system’s decisions:
+
+* Monthly review for Layers 1–4
+* Weekly review for Layers 5–7
+* Random sampling of autonomous decisions
+* Manual inspection of:
+    * Safety limit compliance
+    * Model consistency
+    * Signs of “optimization drift”
+    * Overuse of overrides
+* Archive audit outcomes
+
+### 3. Digital Twin Validation Protocol
+
+Every new control strategy must be tested on the digital model under four scenarios:
+
+1.  Normal conditions
+2.  Boundary conditions (edges of safe region)
+3.  Failure scenarios (sensor errors, partial drift)
+4.  Stress test (extreme but still physically possible)
+
+If any fail → human approval required.
+
+Validation results must be archived before hardware execution.
+
+### 4. Inter-Layer Logging Requirements
+
+Every communication between layers (commands, decisions, conflicts) must be logged with:
+
+* time
+* origin and target layers
+* message content
+* outcome (approved, rejected, modified)
+* conflict flag
+* anomaly flag
+* human override flag
+
+Logs should be kept for at least one year; indefinitely for anomalies or overrides.
+
+---
+
+## C. Global Constitutional Rules
+
+* **Order of trust:**
+    calibration → hardware health → data interpretation → optimization → measurement planning → scientific reasoning
+* **Human checkpoints:**
+    * new pulse families
+    * long autonomous runs
+    * model changes
+    * scientific hypotheses or conclusions
+* **Digital model requirement:**
+    all high-risk actions must pass digital model validation first.
+* **Safety envelopes:**
+    1.  **physical limits** (from design)
+    2.  **operational limits** (from calibration)
+    3.  **knowledge limits** (from data interpretation)
+    All autonomous actions must remain inside these boundaries.
+* **Autonomy audits:**
+    regular human review of autonomous decisions.
