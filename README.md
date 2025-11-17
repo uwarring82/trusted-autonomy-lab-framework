@@ -37,4 +37,13 @@ and human oversight remain central.
 
 ## License
 
-To be chosen later. A permissive open-source license is recommended.
+This repository uses two licenses:
+
+- **Creative Commons Attribution 4.0 International (CC BY 4.0)**  
+  for all documentation, text files, diagrams, and conceptual materials.
+
+- **MIT License**  
+  for all source code or scripts contained in the repository.
+
+You are welcome to use, modify, and share this work under these terms.
+Attribution is required for documentation under the CC BY 4.0 license.
