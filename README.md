@@ -1,7 +1,8 @@
 # Autonomous Experiment Architecture
 
 A clear and safe architecture for building **human-supervised** autonomous
-experimental systems. The framework is based on eight layers, starting
+experimental systems. The framework consists of eight layers (numbered
+0–7), starting
 from design and basic stability (Layer 0) up to scientific reasoning
 and hypothesis suggestions (Layer 7). Across all layers, physical safety,
 scientific integrity, and human oversight remain central.
@@ -69,6 +70,15 @@ A central idea is that autonomy is only acceptable when it is:
 
 Additional folders such as `diagrams/` and `examples/` may be added
 to collect figures, case studies, and reference implementations.
+
+## Implementation Status
+
+This repository currently provides:
+- A complete conceptual architecture
+- Core safety documentation
+- Initial governance and audit protocols
+
+Reference implementations and examples will be added in later phases.
 
 ## License
 
